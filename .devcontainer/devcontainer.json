@@ -1,0 +1,14 @@
+{
+    "name": "ESP32 Development",
+    "build": {
+      "dockerfile": "Dockerfile"
+    },
+    "settings": {
+      "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+      "ms-vscode.cpptools",
+      "espressif.esp-idf-extension"
+    ],
+    "postCreateCommand": "idf.py set-target esp32"
+  }
