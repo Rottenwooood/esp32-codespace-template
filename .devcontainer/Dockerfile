@@ -7,16 +7,20 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     git wget flex bison gperf python3 python3-pip python3-setuptools \
     cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 \
-    tzdata  # 确保安装tzdata时不弹出交互提示
+    tzdata
 
-# 设置默认时区（可选）
+# 设置默认时区
 RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
-# 安装ESP-IDF
+# 安装 ESP-IDF
 ENV IDF_PATH=/esp-idf
-RUN git clone --recursive https://github.com/espressif/esp-idf.git $IDF_PATH
-RUN python3 -m pip install --user -r $IDF_PATH/requirements.txt
+RUN git clone --recursive https://github.com/espressif/esp-idf.git $IDF_PATH && \
+    test -f $IDF_PATH/requirements.txt || (echo "requirements.txt not found!" && exit 1)
+
+# 安装 Python 依赖
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --user -r $IDF_PATH/requirements.txt
 
 # 设置环境变量
 ENV PATH="$IDF_PATH/tools:$PATH"
