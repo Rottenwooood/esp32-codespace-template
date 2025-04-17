@@ -1,9 +1,17 @@
 FROM ubuntu:20.04
 
+# 设置非交互模式
+ENV DEBIAN_FRONTEND=noninteractive
+
 # 安装基础依赖
 RUN apt-get update && apt-get install -y \
     git wget flex bison gperf python3 python3-pip python3-setuptools \
-    cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+    cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 \
+    tzdata  # 确保安装tzdata时不弹出交互提示
+
+# 设置默认时区（可选）
+RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
 
 # 安装ESP-IDF
 ENV IDF_PATH=/esp-idf
